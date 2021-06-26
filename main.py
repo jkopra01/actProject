@@ -36,12 +36,6 @@ SEASON_END_DATE_MONTH_2019_2020 = 3
 SEASON_START_DATE_YEAR_2019_2020 = 2019
 SEASON_END_DATE_YEAR_2019_2020 = 2020
 
-
-seasonStartDate = '2021-01-13'
-toDate = '2021-04-13'
-fromDate = '2021-04-13'
-fromSeason = '20202021'
-toSeason = '20202021'
 l = []
 
 def getSeasonAndMerge(SD, SM, SY, ED, EM, EY):
@@ -72,26 +66,30 @@ def getSeasonAndMerge(SD, SM, SY, ED, EM, EY):
 
         SD = int(SD)
         SM = int(SM)
+        #february
         if SD == 29 and SM == 2:
             SD = 1
             SM = 3
+        #months with 30 days
         elif (SD == 30 and SM == 4) or (SD == 30 and SM == 6) or (SD == 30 and SM == 9)  or (SD == 30 and SM == 11):
             SD=1
             SM +=1
+        #end of year
         elif (SD == 31 and SM == 12):
             SD=1
             SM=1
             SY +=1
+        #months with 31 days
         elif SD==31:
             SD=1
             SM+=1
         else:
             SD+=1
 
-file_name1 = "lopputulos.csv"
+file_name = "nhlDataset.csv"
 getSeasonAndMerge(SEASON_START_DATE_DAY_2019_2020,SEASON_START_DATE_MONTH_2019_2020,SEASON_START_DATE_YEAR_2019_2020,SEASON_END_DATE_DAY_2019_2020,SEASON_END_DATE_MONTH_2019_2020,SEASON_END_DATE_YEAR_2019_2020)
 getSeasonAndMerge(SEASON_START_DATE_DAY_2018_2019,SEASON_START_DATE_MONTH_2018_2019,SEASON_START_DATE_YEAR_2018_2019,SEASON_END_DATE_DAY_2018_2019,SEASON_END_DATE_MONTH_2018_2019,SEASON_END_DATE_YEAR_2018_2019)
 getSeasonAndMerge(SEASON_START_DATE_DAY_2017_2018,SEASON_START_DATE_MONTH_2017_2018,SEASON_START_DATE_YEAR_2017_2018,SEASON_END_DATE_DAY_2017_2018,SEASON_END_DATE_MONTH_2017_2018,SEASON_END_DATE_YEAR_2017_2018)
 getSeasonAndMerge(SEASON_START_DATE_DAY_2016_2017,SEASON_START_DATE_MONTH_2016_2017,SEASON_START_DATE_YEAR_2016_2017,SEASON_END_DATE_DAY_2016_2017,SEASON_END_DATE_MONTH_2016_2017,SEASON_END_DATE_YEAR_2016_2017)
 
-pd.concat(l).to_csv(file_name1, sep='\t', encoding='utf-8')
+pd.concat(l).to_csv(file_name, sep='\t', encoding='utf-8')
