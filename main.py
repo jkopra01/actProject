@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+import unittest
+import random
 
 #2016-2017
 SEASON_START_DATE_DAY_2016_2017 = 12
@@ -43,7 +45,7 @@ SEASON_END_DATE_MONTH_TEST = 1
 SEASON_START_DATE_YEAR_TEST = 2019
 SEASON_END_DATE_YEAR_TEST = 2020
 
-l = []
+listOfDataframes = []
 datesGathered = []
 
 def getSeasonAndMerge(SD, SM, SY, ED, EM, EY):
@@ -60,7 +62,7 @@ def getSeasonAndMerge(SD, SM, SY, ED, EM, EY):
         print(toDate)
         fromDate = toDate
         datesGathered.append(toDate)
-       #Stop from overflowing the server
+        #Stop from overflowing the server
         time.sleep(10)
         statisticUrl = "https://www.naturalstattrick.com/teamtable.php?fromseason="+fromSeason+"&thruseason="+toSeason+"&stype=2&sit=5v5&score=all&rate=n&team=all&loc=B&gpf=410&fd=" + seasonStartDate + "&td=" + toDate + "#"
         dfStats = pd.read_html(statisticUrl, header=0, index_col = 0, na_values=["-"])[0]
@@ -70,7 +72,7 @@ def getSeasonAndMerge(SD, SM, SY, ED, EM, EY):
         dfResults = pd.read_html(resultsUrl, header=0, index_col = 0, na_values=["-"])[0]
         dfResults = pd.DataFrame(dfResults, columns = ['Team', 'W'])
         mergedDataFrames = dfStats.merge(dfResults, how = 'inner', on = ['Team'])
-        l.append(mergedDataFrames)
+        listOfDataframes.append(mergedDataFrames)
         
         SD = int(SD)
         SM = int(SM)
@@ -102,14 +104,10 @@ getSeasonAndMerge(SEASON_START_DATE_DAY_2016_2017,SEASON_START_DATE_MONTH_2016_2
 
 pd.concat(l).to_csv(file_name, sep='\t', encoding='utf-8')
 
-
-
-import unittest
-import random
 class TestNotebook(unittest.TestCase):
     def test_winColumnIsMerged(self):
         seasonData = getSeasonAndMerge(SEASON_START_DATE_DAY_TEST,SEASON_START_DATE_MONTH_TEST,SEASON_START_DATE_YEAR_TEST,SEASON_END_DATE_DAY_TEST,SEASON_END_DATE_MONTH_TEST,SEASON_END_DATE_YEAR_TEST)
-        self.assertEqual(l[0].columns[l[0].columns.size-1], "W")    
+        self.assertEqual(listOfDataframes[0].columns[listOfDataframes[0].columns.size-1], "W")    
             
     def test_dayMonthYearChangesCorrectly(self):
         seasonData = getSeasonAndMerge(SEASON_START_DATE_DAY_TEST,SEASON_START_DATE_MONTH_TEST,SEASON_START_DATE_YEAR_TEST,SEASON_END_DATE_DAY_TEST,SEASON_END_DATE_MONTH_TEST,SEASON_END_DATE_YEAR_TEST)
